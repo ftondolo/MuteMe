@@ -1,7 +1,10 @@
-import os, platform, time
+import os, platform, time, win32api
 
+#Current Operating System
 os_platform = platform.system()
 
+#Assumes master mic volume is not muted as this is usually handled on an app-to-app basis
+#Also sets preset max mic volume to 100% which is updated later should theree be variation
 mute = 0
 preset = 100
 
@@ -33,9 +36,11 @@ elif os_platform == 'Darwin':
 else:
      while True:
         if mute:
-            print("Windows, muting")
-            mute = 1
+            #For reference: https://www.codestudyblog.com/sf2002d/0223183122.html
+            win32api.SendMessage(-1, 0x319, 0x30292, 0x0a * 0x10000)
+            mute = 0
             time.sleep(2)
         else:
-            mute = 0
+            win32api.SendMessage(-1, 0x319, 0x30292, 0x09 * 0x10000)
+            mute = 1
             time.sleep(2)
